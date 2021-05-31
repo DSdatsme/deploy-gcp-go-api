@@ -48,11 +48,3 @@ resource "google_storage_bucket_iam_policy" "policy" {
 }
 
 
-# Setting up CDN for GCS
-/* resource "google_compute_backend_bucket" "static-cdn" {
-  name        = "${google_storage_bucket.static-content.name}-bucket-backend"
-  description = "Store static content for Go App"
-  bucket_name = google_storage_bucket.static-content.name
-  enable_cdn  = true
-} */
-
