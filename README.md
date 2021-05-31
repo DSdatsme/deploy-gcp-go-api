@@ -6,6 +6,7 @@
 - Default VPC is setup
 - Have desired access to deploy resources
 - Have hardcoded images in your project
+- Enable Service Networking API 
 
 
 ## Setup
