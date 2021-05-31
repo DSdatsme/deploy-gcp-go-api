@@ -11,6 +11,12 @@
 
 ## Setup
 
+### setup environment
+
+```bash
+export TF_VAR_github_token=<github token>
+```
+
 ### API Server
 
 test connect to postgress
