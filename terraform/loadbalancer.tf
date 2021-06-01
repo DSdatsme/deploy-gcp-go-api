@@ -13,58 +13,34 @@ resource "google_compute_backend_service" "app-backend" {
   protocol    = "HTTP"
   timeout_sec = 10
 
-  health_checks = [google_compute_health_check.http-check.id]
+  health_checks         = [google_compute_health_check.http-check.id]
   load_balancing_scheme = "EXTERNAL"
-}
-
-resource "google_compute_url_map" "bucket-map" {
-  name        = "urlmap"
-  description = "a description"
-
-  default_service = google_compute_backend_bucket.static-backend-bucket.id
-
-
-
-  path_matcher {
-    name            = "static"
-    default_service = google_compute_backend_bucket.static-backend-bucket.id
-
-    path_rule {
-      paths   = ["/index.html"]
-      service = google_compute_backend_bucket.static-backend-bucket.id
-    }
-
-    path_rule {
-      paths   = ["/main.js"]
-      service = google_compute_backend_bucket.static-backend-bucket.id
-    }
-
-    path_rule {
-      paths   = ["/api/*"]
-      service = google_compute_backend_service.app-backend.id
-    }
+  backend {
+    description = "backend to have application VMs"
+    group       = google_compute_instance_group_manager.go-app.instance_group
   }
-
-
 }
 
 
 module "gce-lb-http" {
-  source            = "GoogleCloudPlatform/lb-http/google"
-  version           = "~> 4.4"
+  source  = "GoogleCloudPlatform/lb-http/google"
+  version = "~> 4.4"
 
   project = var.gcp_default_project_id
-  name              = "group-http-lb"
+  name    = var.loadbalancer_name
+
+  url_map        = google_compute_url_map.url-map.self_link
+  create_url_map = false
   backends = {
     default = {
-      description                     = null
-      protocol                        = "HTTP"
-      port                            = 80
-      port_name                       = "http"
-      timeout_sec                     = 10
-      enable_cdn                      = false
-      custom_request_headers          = null
-      security_policy                 = null
+      description            = null
+      protocol               = "HTTP"
+      port                   = 80
+      port_name              = "http"
+      timeout_sec            = 10
+      enable_cdn             = false
+      custom_request_headers = null
+      security_policy        = null
 
       connection_draining_timeout_sec = null
       session_affinity                = null
@@ -82,8 +58,9 @@ module "gce-lb-http" {
       }
 
       log_config = {
-        enable = true
+        enable      = true
         sample_rate = 1.0
+
       }
 
       groups = [
@@ -111,3 +88,50 @@ module "gce-lb-http" {
     }
   }
 }
+
+resource "google_compute_url_map" "url-map" {
+  name        = var.loadbalancer_name
+  description = "url mapping for website components"
+
+  default_service = google_compute_backend_service.app-backend.self_link
+
+  host_rule {
+    hosts        = ["*"]
+    path_matcher = "allroutes"
+  }
+
+  path_matcher {
+    name            = "allroutes"
+    default_service = google_compute_backend_service.app-backend.self_link
+
+    path_rule {
+      paths   = ["/index.html"]
+      service = google_compute_backend_bucket.static-backend-bucket.self_link
+    }
+
+    path_rule {
+      paths   = ["/main.js"]
+      service = google_compute_backend_bucket.static-backend-bucket.self_link
+    }
+
+    path_rule {
+      paths   = ["/api/*"]
+      service = google_compute_backend_service.app-backend.self_link
+    }
+  }
+}
+
+
+# use this when you are not using lb module and want to just use URL map resource
+# resource "google_compute_target_http_proxy" "lb-proxy" {
+#   name        = "target-proxy"
+#   description = "proxy mapper"
+#   url_map     = google_compute_url_map.url-map.id
+# }
+
+
+# resource "google_compute_global_forwarding_rule" "main-rule" {
+#   name       = "main-rule"
+#   target     = google_compute_target_http_proxy.lb-proxy.id
+#   port_range = "80"
+# }

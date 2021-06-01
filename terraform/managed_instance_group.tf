@@ -21,7 +21,7 @@ resource "google_compute_instance_template" "go-app-template" {
 
   // Create a new boot disk from an image
   disk {
-    source_image = "ubuntu-os-cloud/ubuntu-1804-lts"
+    source_image = "consul-ubuntu18-60b69add-90fc-e6f1-8d14-cdbd65227996"
     auto_delete  = true
     boot         = true
     // backup the disk every day

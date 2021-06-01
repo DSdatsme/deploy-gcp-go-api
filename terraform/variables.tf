@@ -1,6 +1,6 @@
 variable "gcp_default_project_id" {
   type    = string
-  default = "playground-s-11-39f46c13"
+  default = "playground-s-11-d7d433da"
 }
 
 variable "default_gcp_region" {
@@ -15,10 +15,21 @@ variable "default_gcp_zone" {
 
 variable "bucket_name" {
   type    = string
-  default = "dsdatsme-3"
+  default = "dsdatsme-4"
 }
 
 variable "github_token" {
   type      = string
   sensitive = true
+}
+
+variable "sql_password" {
+  type      = string
+  sensitive = true
+  default = "sudopasswd"
+}
+
+variable "loadbalancer_name" {
+  type      = string
+  default = "app-lb"
 }

@@ -18,6 +18,7 @@ data "template_file" "custom-startup-script" {
 
   vars = {
     database_server_ip = google_sql_database_instance.database-server.private_ip_address
+    database_password  = var.sql_password
     github_token       = var.github_token
   }
 }

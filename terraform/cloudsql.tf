@@ -29,7 +29,9 @@ resource "google_sql_database_instance" "database-server" {
 
 
 resource "google_sql_user" "root-db-user" {
+  # re-create password for root user
+  # NOTE: when deleting the env, you will have to manually delete this from state and then destory the env
   name     = "postgres"
   instance = google_sql_database_instance.database-server.name
-  password = "sudopasswd"
+  password = var.sql_password
 }
