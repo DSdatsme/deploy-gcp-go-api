@@ -1,3 +1,15 @@
+resource "google_compute_firewall" "consul-firewall" {
+  name        = "access-consul-firewall"
+  description = "consul port access"
+  network     = module.vpc.network_name
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22", "8500"] # WARNING: expose consul publically
+  }
+
+  target_tags = ["expose-consul"]
+}
 module "consul_cluster" {
   # Use version v0.0.1 of the consul-cluster module
   source = "github.com/hashicorp/terraform-google-consul//modules/consul-cluster?ref=v0.5.0"
@@ -7,6 +19,7 @@ module "consul_cluster" {
 
   network_name               = module.vpc.network_name
   subnetwork_name            = module.vpc.subnets_names[0]
+  custom_tags                = ["expose-consul", var.consul_cluster_join_tag]
   cluster_name               = "consul-server"
   cluster_description        = "Service Discovery Cluster"
   machine_type               = "f1-micro"

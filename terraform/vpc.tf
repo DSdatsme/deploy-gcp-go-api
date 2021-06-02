@@ -18,8 +18,10 @@ module "vpc" {
   ]
 
   routes = [
-        # IGW not needed
-    ]
+    # IGW not needed
+  ]
+
+  depends_on = [google_project_service.enable-networking]
 }
 
 

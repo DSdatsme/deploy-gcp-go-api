@@ -20,6 +20,6 @@ cat <<EOF > config.json
 EOF
 echo "d" >> /tmp/a.log
 
-/opt/consul/bin/run-consul --client --cluster-tag-name "cluster-tag"
+/opt/consul/bin/run-consul --client --cluster-tag-name ${consul_cluster_join_tag}
 
 ./api --config-file config.json

@@ -1,27 +1,9 @@
-# firewall to access Go API server
-resource "google_compute_firewall" "go-server-firewall" {
-  name        = "access-go-server-firewall"
-  description = "http port access"
-  network     = module.vpc.network_name
+#################################################################################
+# NOTE:
+#   This file is depricated in favour of `managed_instance_group.tf`
+#   Use this if you want to do a custom deploy of API server and test things
+#################################################################################
 
-  allow {
-    protocol = "tcp"
-    ports    = ["22", "80"] # WARNING: SSH port is open to world
-  }
-
-  target_tags = ["go-server"]
-}
-
-# startup script for configuring database IP
-data "template_file" "custom-startup-script" {
-  template = file("./setup_deployer.sh.tpl")
-
-  vars = {
-    database_server_ip = google_sql_database_instance.database-server.private_ip_address
-    database_password  = var.sql_password
-    github_token       = var.github_token
-  }
-}
 
 # VM for Go API server [TEST]
 # resource "google_compute_instance" "api-server" {

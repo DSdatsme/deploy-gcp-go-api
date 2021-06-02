@@ -26,12 +26,6 @@ resource "google_storage_bucket_object" "index-html" {
   bucket = google_storage_bucket.static-content.name
 }
 
-# Make bucket public
-/* resource "google_storage_bucket_access_control" "public_rule" {
-  bucket = google_storage_bucket.static-content.name
-  role   = "READER"
-  entity = "allUsers"
-} */
 
 data "google_iam_policy" "public-view" {
   binding {
@@ -43,8 +37,6 @@ data "google_iam_policy" "public-view" {
 }
 
 resource "google_storage_bucket_iam_policy" "policy" {
-  bucket = google_storage_bucket.static-content.name
+  bucket      = google_storage_bucket.static-content.name
   policy_data = data.google_iam_policy.public-view.policy_data
 }
-
-

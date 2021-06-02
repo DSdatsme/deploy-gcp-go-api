@@ -1,4 +1,4 @@
-# bucket backend servive
+# Bucket backend servive
 resource "google_compute_backend_bucket" "static-backend-bucket" {
   name        = "static-asset-backend-bucket"
   bucket_name = google_storage_bucket.static-content.name
@@ -22,6 +22,7 @@ resource "google_compute_backend_service" "app-backend" {
 }
 
 
+# Setup Application Loadbalancer
 module "gce-lb-http" {
   source  = "GoogleCloudPlatform/lb-http/google"
   version = "~> 4.4"
@@ -89,6 +90,7 @@ module "gce-lb-http" {
   }
 }
 
+# URL map to above ALB
 resource "google_compute_url_map" "url-map" {
   name        = var.loadbalancer_name
   description = "url mapping for website components"
@@ -129,7 +131,7 @@ resource "google_compute_url_map" "url-map" {
 #   url_map     = google_compute_url_map.url-map.id
 # }
 
-
+# This is for frontend of LB if you want to manually deploy
 # resource "google_compute_global_forwarding_rule" "main-rule" {
 #   name       = "main-rule"
 #   target     = google_compute_target_http_proxy.lb-proxy.id

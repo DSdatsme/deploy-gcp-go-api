@@ -26,10 +26,20 @@ variable "github_token" {
 variable "sql_password" {
   type      = string
   sensitive = true
-  default = "sudopasswd"
+  default   = "sudopasswd"
 }
 
 variable "loadbalancer_name" {
-  type      = string
+  type    = string
   default = "app-lb"
+}
+
+variable "ubuntu_image_name" {
+  type    = string
+  default = "consul-ubuntu18-<full-name>"
+}
+
+variable "consul_cluster_join_tag" {
+  type    = string
+  default = "join-consul"
 }

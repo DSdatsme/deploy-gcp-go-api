@@ -1,3 +1,4 @@
+# This deploys CloudSQL
 resource "google_sql_database_instance" "database-server" {
   name                = "app-database-server1"
   database_version    = "POSTGRES_12"
