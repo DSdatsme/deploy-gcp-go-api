@@ -1,17 +1,30 @@
-module "consul" {
-  source  = "hashicorp/consul/google"
-  version = "0.5.0"
-  # insert the 10 required variables here
-  gcp_project_id                 = var.gcp_default_project_id
-  gcp_region                     = var.default_gcp_region
-  
-  consul_server_cluster_name     = "consul-server"  
-  consul_server_cluster_tag_name = "cluster-tag"
-  consul_server_source_image     = "consul-ubuntu18-60b69add-90fc-e6f1-8d14-cdbd65227996"
-  consul_server_cluster_size     = 1
+module "consul_cluster" {
+  # Use version v0.0.1 of the consul-cluster module
+  source = "github.com/hashicorp/terraform-google-consul//modules/consul-cluster?ref=v0.5.0"
 
-  consul_client_cluster_name     = "go-application"
-  consul_client_cluster_tag_name = "consul-go-client"
-  consul_client_source_image     = "consul-ubuntu18-60b69add-90fc-e6f1-8d14-cdbd65227996"
-  consul_client_cluster_size     = 0
+  gcp_project_id = var.gcp_default_project_id
+  gcp_region     = var.default_gcp_region
+
+  network_name               = module.vpc.network_name
+  subnetwork_name            = module.vpc.subnets_names[0]
+  cluster_name               = "consul-server"
+  cluster_description        = "Service Discovery Cluster"
+  machine_type               = "f1-micro"
+  source_image               = var.ubuntu_image_name
+  cluster_size               = 1
+  assign_public_ip_addresses = true
+
+  # Add this tag to each node in the cluster for auto discovery
+  cluster_tag_name = var.consul_cluster_join_tag
+
+  startup_script = <<-EOF
+              #!/bin/bash
+              /opt/consul/bin/run-consul --server --cluster-tag-name ${var.consul_cluster_join_tag}
+              EOF
+
+  # Ensure the Consul node correctly leaves the cluster when the instance restarts or terminates.
+  shutdown_script = <<-EOF
+              #!/bin/bash
+              /opt/consul/bin/consul leave
+              EOF
 }
