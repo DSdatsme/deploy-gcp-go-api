@@ -1,9 +1,9 @@
 # This deploys CloudSQL
 resource "google_sql_database_instance" "database-server" {
-  name                = "app-database-server1"
+  name                = "app-database-server"
   database_version    = "POSTGRES_12"
   region              = var.default_gcp_region
-  deletion_protection = "false"
+  deletion_protection = "false" # WARNING: this is not for prod
 
   settings {
     tier              = "db-f1-micro"

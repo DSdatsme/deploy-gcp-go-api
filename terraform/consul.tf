@@ -24,7 +24,7 @@ module "consul_cluster" {
   cluster_description        = "Service Discovery Cluster"
   machine_type               = "f1-micro"
   source_image               = var.ubuntu_image_name
-  cluster_size               = 1
+  cluster_size               = 2
   assign_public_ip_addresses = true
 
   # Add this tag to each node in the cluster for auto discovery

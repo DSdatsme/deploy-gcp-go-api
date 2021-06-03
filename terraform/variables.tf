@@ -1,6 +1,6 @@
 variable "gcp_default_project_id" {
   type    = string
-  default = "playground-s-11-d7d433da"
+  default = "gcp-project-id-<xyz>"
 }
 
 variable "default_gcp_region" {
@@ -15,7 +15,7 @@ variable "default_gcp_zone" {
 
 variable "bucket_name" {
   type    = string
-  default = "dsdatsme-4"
+  default = "dsdatsme-static"
 }
 
 variable "github_token" {
@@ -36,7 +36,7 @@ variable "loadbalancer_name" {
 
 variable "ubuntu_image_name" {
   type    = string
-  default = "consul-ubuntu18-<full-name>"
+  default = "consul-ubuntu18-<id>"
 }
 
 variable "consul_cluster_join_tag" {
