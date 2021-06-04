@@ -48,6 +48,13 @@ Giving some brief intro on what some of the important Terraform config file does
 - Consul agent present on app servers require some specific GCP permission scope to figure out consul servers in the project and join 'em.
 - By default only one replica is run, but if the CPU consumption on them increases, they autoscale horizontally.
 - If you wish to manually run unmanaged version of API server, you can explore `apiserver.tf` file.
+- Sample config file is present in repo as `config.sample.json`. The `http_port` is the port on which API runs where as `db_connstring` is the postgress connection string having required format as --> `postgresql://<user>:<password>@<db-server-ip>`
+- The app servers are configured by entrypoint script which runs every time a new server boots up. This script first clones this github repo using token, starts consul agent and at last starts API binary with config file as a parameter.
+- To run API manually
+
+```bash
+go run main.go --config-file <path-to-config-file>
+```
 
 ### Consul Server
 
@@ -57,6 +64,7 @@ Giving some brief intro on what some of the important Terraform config file does
 - Default cluster size is set to two nodes in this repo.
 - Currently port 8500 and 22 is exposed to public just for debugging purpose, that can be removed for production.
 - App server connect to consul using private IP as they are in same VPC.
+- To open consul UI, you can use any of the consil-server's public IP and open in your browser `<IP-address>:8500`.
 
 ### Load Balancer
 
