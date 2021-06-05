@@ -56,6 +56,8 @@ Giving some brief intro on what some of the important Terraform config file does
 go run main.go --config-file <path-to-config-file>
 ```
 
+- The API server scales automatically when the CPU goes above 80%.
+
 ### Consul Server
 
 > file: `consul.tf`
